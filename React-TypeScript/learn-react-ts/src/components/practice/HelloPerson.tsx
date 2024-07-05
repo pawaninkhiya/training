@@ -1,11 +1,15 @@
 import HelloPersonList from "./HelloPersonList";
 
-type dataProps = {
-  name: {
-    first: string;
-    last: string;
-  };
-};
+// using spreat file  type
+import { dataProps } from "./Hello.Person.Type";
+// normal type define 
+
+// type dataProps = {
+//   name: {
+//     first: string;
+//     last: string;
+//   };
+// };
 
 let userNames = [
   { first: "Ankit", last: "Soni" },

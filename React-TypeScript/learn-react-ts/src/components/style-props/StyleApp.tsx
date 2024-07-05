@@ -4,7 +4,7 @@ import StyleContainer from './StyleContainer'
 const StyleApp = () => {
   return (
     <div>
-    <StyleContainer/>>
+    <StyleContainer  style={{backgroundColor:"purple",padding:"4rem",color:"white"}}/>
     </div>
   )
 }

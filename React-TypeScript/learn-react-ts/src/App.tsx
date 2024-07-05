@@ -1,10 +1,16 @@
 import React from 'react'
 import EventProps from './components/event-props/EventProps'
+import StyleApp from './components/style-props/StyleApp'
+import UseStateApp from './components/use-state-hook/UseStateApp'
+import IncDec from './components/userReducerHook/IncDec'
 
 const App = () => {
   return (
     <div>
-      <EventProps/>
+      {/* <EventProps/> */}
+      {/* <StyleApp/> */}
+      {/* <UseStateApp/>   */}
+      <IncDec/>
     </div>
   )
 }

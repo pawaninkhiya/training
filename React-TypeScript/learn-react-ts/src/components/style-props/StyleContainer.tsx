@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
 
-const StyleContainer = () => {
-  return (
-    <div>StyleContainer</div>
-  )
-}
+type StyleProps = {
+  style: React.CSSProperties;
+};
+const StyleContainer = (props: StyleProps) => {
+  return <div style={props.style}>StyleContainer</div>;
+};
 
-export default StyleContainer
+export default StyleContainer;
