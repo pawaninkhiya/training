@@ -1,0 +1,10 @@
+.class-with-primary {
+  padding: 10px 20px;
+  background: blue;
+  color: white;
+}
+.class-with-secondary {
+  padding: 10px 20px;
+  background: red;
+  color: white;
+}

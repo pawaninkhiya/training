@@ -17,8 +17,8 @@ const User = () => {
   };
   return (
     <div>
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleLogout}>LogOut</button>
+      <button className="bg-red-600 py-1 px-3 rounded-sm font-semibold text-white" onClick={handleLogin}>Login</button>
+      <button className="bg-green-600 py-1 px-3 rounded-sm font-semibold text-white ml-2" onClick={handleLogout}>LogOut</button>
       <div>UserName is {user?.name}</div>
       <div>Email is {user?.email}</div>
     </div>
