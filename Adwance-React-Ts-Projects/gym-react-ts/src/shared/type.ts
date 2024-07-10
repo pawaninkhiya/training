@@ -1,7 +1,19 @@
-export enum SeletedPage{
-    Home= "home",
-    Benifits="benifits",
-    OurClasses="Our Classes",
-    ContactUs="contactus"
-  
-  }
+export enum SelectedPage {
+  Home = "home",
+  Benifits = "benifits",
+  OurClasses = "ourclasses",
+  ContactUs = "contactus"
+
+}
+
+export type BenefitType = {
+  icon: JSX.Element;
+  title: string,
+  description: string
+}
+
+export type ClassType = {
+  name: string,
+  description?: string,
+  image: string
+}
