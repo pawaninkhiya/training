@@ -2,6 +2,7 @@ import HText from "@/shared/HText";
 import { SelectedPage } from "@/shared/type";
 import { motion } from "framer-motion"
 import { useForm } from "react-hook-form";
+import  ContactUsPageGraphic from "@/assets/ContactUsPageGraphic.png"
 type Props = {
     setSelectedPage: (value: SelectedPage) => void
 }
@@ -15,7 +16,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
             e.preventDefault()
         }
     }
-    let inputStyles = `rounded-lg bg-primary-300 px-5 py-3 placeholder-white`
+    let inputStyles = `mt-5 w-full rounded-lg bg-primary-300 px-5 py-3 placeholder-white`
     return (
         <section id="contactus" className="mx-auto w-5/6 pt-24 pb-32 ">
             <motion.div className="div"
@@ -33,7 +34,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                     }}
                 >
                     <HText>
-                        <span className="text-primary-500">JOIN NOW </span>
+                        <span><span className="text-primary-500">JOIN NOW </span>TO GET IN SHAPE</span>
                     </HText>
                     <p className="my-5">Congue adipiscing risus commodo placerat. Tellus et in feugiat nisl
                         sapien vel rhoncus. Placerat at in enim pellentesque. Nulla
@@ -96,9 +97,9 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                                     </p>
                                 )
                             }
-                            <input type="text" className={inputStyles} {...register("message", {
+                            <textarea rows={4} cols={50} className={inputStyles} {...register("message", {
                                 required: true,
-                               maxLength: 2000
+                                maxLength: 2000
                             })}
                                 placeholder="message"
                             />
@@ -110,13 +111,28 @@ const ContactUs = ({ setSelectedPage }: Props) => {
 
                                         }
                                         {
-                                            errors.message.type === "pattern" && "Max length is 2000 char."
+                                            errors.message.type === "maxLength" && "Max length is 2000 char."
                                         }
                                     </p>
                                 )
                             }
+                            <button className="mt-5 rounded-lg bg-secondary-500 px-20 py-3 transition duration-500 hover:text-white ">Submit</button>
                         </form>
 
+                    </motion.div>
+                    <motion.div className="relative mt-16 basis-2/6 md:mt-0"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ duration: 0.5 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 50 },
+                            visible: { opacity: 1, y: 0 }
+                        }}
+                    >
+                        <div className="md:before:content-evolvetext w-full  before:absolute before:-bottom-20 before:-right-10 before:z-[-1]">
+                            <img className="w-full md:mt-4" src={ContactUsPageGraphic} alt="contect page graphic " />
+                        </div>
                     </motion.div>
                 </div>
             </motion.div>
