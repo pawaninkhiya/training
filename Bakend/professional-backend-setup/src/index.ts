@@ -20,7 +20,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+// import routes  routes  
+import userRouter from "./routes/user.routes";
+
+// route declaration 
+app.use("/api/v1/users", userRouter);
+
 const PORT = config.PORT;
+// routes
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

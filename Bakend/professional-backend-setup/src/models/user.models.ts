@@ -2,9 +2,11 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const accessTokenSecret: string = process.env.ACCESS_TOKEN_SECRET || "";
-const accessTokenExpiry: string = process.env.ACCESS_TOKEN_EXPIRY || ""
-interface IUser extends Document {
+const accessTokenSecret: string = process.env.ACCESS_TOKEN_SECRET || "abc1";
+const accessTokenExpiry: string = process.env.ACCESS_TOKEN_EXPIRY || "1d";
+const accessRefreshSecret: string = process.env.ACCESS_Refresh_SECRET || "abc2";
+const accessRefreshExpiry: string = process.env.ACCESS_Refresh_EXPIRY || "10d";
+export interface IUser extends Document {
   watchHistory: Types.ObjectId[];
   username: string;
   email: string;
@@ -41,7 +43,6 @@ const userSchema = new Schema<IUser>(
     },
     avatar: {
       type: String, // Cloudinary URL
-      required: true,
     },
     coverImage: {
       type: String, // Cloudinary URL
@@ -80,6 +81,7 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// generate access token
 userSchema.methods.generateAccessToken = function (): string {
   const payload = {
     _id: this._id,
@@ -88,6 +90,20 @@ userSchema.methods.generateAccessToken = function (): string {
     fullName: this.fullName,
   };
 
-  return jwt.sign(payload, accessTokenSecret, { expiresIn: "1h" });
+  return jwt.sign(payload, accessTokenSecret, { expiresIn: accessTokenExpiry });
+};
+
+// generate refresh token
+
+userSchema.methods.generateRefreshToken = function (): string {
+  const payload = {
+    _id: this._id,
+    email: this.email,
+    username: this.username,
+    fullName: this.fullName,
+  };
+  return jwt.sign(payload, accessRefreshSecret, {
+    expiresIn: accessRefreshExpiry,
+  });
 };
 export const User = mongoose.model<IUser>("User", userSchema);
