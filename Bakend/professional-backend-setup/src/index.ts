@@ -4,10 +4,12 @@ import cors from "cors";
 import config from "./config";
 import connectDb from "./db/db";
 
+const PORT = config.PORT;
 const app: Express = express();
 
 // Connect to MongoDB
 connectDb();
+
 // Middleware
 app.use(
   cors({
@@ -26,7 +28,6 @@ import userRouter from "./routes/user.routes";
 // route declaration 
 app.use("/api/v1/users", userRouter);
 
-const PORT = config.PORT;
 // routes
 
 app.listen(PORT, () => {

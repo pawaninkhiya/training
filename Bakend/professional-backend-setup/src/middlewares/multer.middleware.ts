@@ -1,18 +1,21 @@
-import { Request, Express } from "express";
+
 import multer, { StorageEngine } from "multer";
+import { Request } from "express";
 
 const storage: StorageEngine = multer.diskStorage({
-  destination: function (req: Request, file: Express.Multer.File, cb: Function) {
-    cb(null, "./public/temp"); // Destination folder for uploaded files
+  destination: (req: Request, file: Express.Multer.File, cb: Function) => {
+    cb(null, "./uploads"); 
   },
-  filename: function (req: Request, file: Express.Multer.File, cb: Function) {
-    cb(null, file.originalname); // Use the original file name
+  filename: (req: Request, file: Express.Multer.File, cb: Function) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
 const upload = multer({ storage: storage });
 
 export { upload };
+
+
 
 
 // import multer from "multer";

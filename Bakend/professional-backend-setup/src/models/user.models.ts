@@ -15,6 +15,9 @@ export interface IUser extends Document {
   coverImage: string;
   password: string;
   refreshToken?: string; // Optional field
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -43,10 +46,10 @@ const userSchema = new Schema<IUser>(
     },
     avatar: {
       type: String, // Cloudinary URL
+      required:true
     },
     coverImage: {
       type: String, // Cloudinary URL
-      required: true,
     },
     watchHistory: [
       {

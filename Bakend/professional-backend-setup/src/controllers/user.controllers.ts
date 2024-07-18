@@ -1,68 +1,108 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
-import { User } from "../models/user.models";
-import { IUser } from "../models/user.models";
 import uploadOnCloudinary from "../utils/cloudinary";
 import ApiResponse from "../utils/EpiResponse";
+import { IUser, User } from "../models/user.models";
+import { FilterQuery } from "mongoose";
 
+const generateAccessAndRefreshToken = (userId = "sbsmna") => {
+  
+};
+const loginUser = asyncHandler(async (req: Request, resp: Response) => {
+  // resp body -> data
+  // username or email
+  // find the user
+  // password or check
+  // access and refresh  token
+  // send coookie
+
+  const { email, username, password } = req.body;
+
+  if (!username && !email) {
+    throw new ApiError(400, "Username or email is required");
+  }
+
+  const filterQuery: FilterQuery<IUser> = { $or: [{ username }, { email }] };
+  const user = await User.findOne(filterQuery);
+  console.log("user", user);
+  if (!user) {
+    throw new ApiError(404, "User does not exists");
+  }
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  resp.status(200).json({
+    message: "Ok",
+    data: isMatch,
+  });
+});
 
 const registerUser = asyncHandler(async (req: Request, resp: Response) => {
+  // step one
   const { username, email, fullName, password } = req.body;
 
-  if ([username, email, fullName, password].some((field) => field.trim() === "")) {
+  // step 2
+  if (
+    [username, email, fullName, password].some(
+      (field) => !field || field === ""
+    )
+  ) {
     throw new ApiError(400, "All fields are required!");
   }
 
+  // step 3
   const existingUsername = await User.findOne({ username });
   if (existingUsername) {
-    return resp.status(400).json({
-      success: false,
-      message: "Username is already in use.",
-    });
+    throw new ApiError(400, "Username is already in use");
   }
 
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
-    return resp.status(400).json({
-      success: false,
-      message: "Email is already in use.",
-    });
+    throw new ApiError(400, "Email is already in use");
   }
 
+  //  step 4
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
   const avatarLocalPath = files.avatar?.[0]?.path;
+
+  let coverImageLocalPath: string = "";
+
+  if (files && Array.isArray(files.coverImage) && files.coverImage.length > 0) {
+    coverImageLocalPath = files.coverImage[0].path;
+  }
+
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
   }
-
   const avatar = await uploadOnCloudinary(avatarLocalPath);
-  let coverImage = null;
-  const coverImageLocalPath = files.coverImage?.[0]?.path;
-  if (coverImageLocalPath) {
-    coverImage = await uploadOnCloudinary(coverImageLocalPath);
-  }
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   const user: Partial<IUser> = await User.create({
     username,
     email,
     password,
     fullName,
-    avatar: avatar.url,
+    avatar: avatar?.url,
     coverImage: coverImage?.url || "",
   });
 
-  const createdUser = await User.findById(user._id).select("-password -refreshToken");
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
   if (!createdUser) {
     throw new ApiError(400, "Something went wrong while registering the user!");
   }
 
-  resp.status(201).json(new ApiResponse(200, createdUser, "User registered successfully"));
+  resp
+    .status(201)
+    .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
-export { registerUser };
-
+export { registerUser, loginUser };
 
 // import { Request, Response } from "express";
 // import { asyncHandler } from "../utils/asyncHandler";
