@@ -2,10 +2,10 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const accessTokenSecret: string = process.env.ACCESS_TOKEN_SECRET || "abc1";
+const accessTokenSecret: string = process.env.ACCESS_TOKEN_SECRET || "defaultAccessTokenSecret";
 const accessTokenExpiry: string = process.env.ACCESS_TOKEN_EXPIRY || "1d";
-const accessRefreshSecret: string = process.env.ACCESS_Refresh_SECRET || "abc2";
-const accessRefreshExpiry: string = process.env.ACCESS_Refresh_EXPIRY || "10d";
+const accessRefreshSecret: string = process.env.REFRESH_TOKEN_SECRET || "defaultRefreshTokenSecret";
+const accessRefreshExpiry: string = process.env.REFRESH_TOKEN_EXPIRY || "10d";
 export interface IUser extends Document {
   watchHistory: Types.ObjectId[];
   username: string;
@@ -46,7 +46,7 @@ const userSchema = new Schema<IUser>(
     },
     avatar: {
       type: String, // Cloudinary URL
-      required:true
+      required: true,
     },
     coverImage: {
       type: String, // Cloudinary URL
