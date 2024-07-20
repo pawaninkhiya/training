@@ -22,11 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// import routes  routes  
+// import routes  routes
 import userRouter from "./routes/user.routes";
+import videoRouter from "./routes/video.routes";
 
-// route declaration 
+// route declaration
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users", videoRouter);
 
 // routes
 

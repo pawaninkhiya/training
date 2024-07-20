@@ -1,13 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 interface ISUBSCRIBER {
-  subscribers: Types.ObjectId;
+  subscriber: Types.ObjectId;
   channel: Types.ObjectId;
 }
 
 const subscriptionSchema = new Schema<ISUBSCRIBER>(
   {
-    subscribers: {
+    subscriber: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },

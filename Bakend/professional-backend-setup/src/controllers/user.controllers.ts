@@ -5,7 +5,10 @@ import uploadOnCloudinary from "../utils/cloudinary";
 import ApiResponse from "../utils/EpiResponse";
 import { IUser, User } from "../models/user.models";
 import { FilterQuery, Types } from "mongoose";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { Express } from "express";
+import { UploadApiResponse } from "cloudinary";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId: unknown) => {
   try {
@@ -61,7 +64,7 @@ const loginUser = asyncHandler(async (req: Request, resp: Response) => {
     .json(
       new ApiResponse(
         200,
-        { user: user, accessToken, refreshToken },
+        { user: loggedUser, accessToken, refreshToken },
         "User logged in Succussfully"
       )
     );
@@ -174,7 +177,6 @@ const registerUser = asyncHandler(async (req: Request, resp: Response) => {
 
   //  step 4
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
   const avatarLocalPath = files.avatar?.[0]?.path;
 
   let coverImageLocalPath: string = "";
@@ -262,6 +264,174 @@ const updateCurrentUser = asyncHandler(async (req: Request, resp: Response) => {
     .json(new ApiResponse(200, updatedUser, "User updated succussfully !"));
 });
 
+// pendiong work delete
+const deleteCurrentUser = asyncHandler(async (req: Request, resp: Response) => {
+  const user = await User.findByIdAndDelete(req.user?._id);
+  resp
+    .status(200)
+    .json(new ApiResponse(200, user, "User deleted succussfully"));
+});
+
+const updateUserAvatar = asyncHandler(async (req: Request, resp: Response) => {
+  const avatarLocalPath = req.file as Express.Multer.File;
+  if (!avatarLocalPath || !avatarLocalPath.path) {
+    throw new ApiError(400, "Avatar is missing !");
+  }
+  const avatar: UploadApiResponse | null = await uploadOnCloudinary(
+    avatarLocalPath?.path
+  );
+  if (!avatar?.url) {
+    throw new ApiError(400, "Error while uploading on avatar");
+  }
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: { avatar: avatar.url },
+    },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  resp
+    .status(200)
+    .json(new ApiResponse(200, user, "User avatar updated succussfully !"));
+});
+
+const updateUserCoverImage = asyncHandler(
+  async (req: Request, resp: Response) => {
+    const coverImageLocalPath = req.file as Express.Multer.File;
+    if (!coverImageLocalPath || !coverImageLocalPath.path) {
+      throw new ApiError(400, "Cover image is missing !");
+    }
+    const coverImage: UploadApiResponse | null = await uploadOnCloudinary(
+      coverImageLocalPath.path
+    );
+    console.log(coverImage);
+    if (!coverImage?.url) {
+      throw new ApiError(400, "Error while uploading on cover image");
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      { $set: { coverImage: coverImage.url } },
+      { new: true }
+    ).select("-password -refreshToken");
+    resp
+      .status(200)
+      .json(
+        new ApiResponse(200, user, "User cover image updated succussfully !")
+      );
+  }
+);
+
+const getUserChannel = asyncHandler(async (req: Request, resp: Response) => {
+  const { username } = req.params;
+  if (!username) {
+    throw new ApiError(400, "Username is missing !");
+  }
+  const channel = await User.aggregate([
+    {
+      $match: { username: username?.toLowerCase() },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscribersCount: { $size: "$subscribers" },
+        subscribedToCount: { $size: "$subscribedTo" },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.user?._id, "$subscribedTo"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        username: 1,
+        fullName: 1,
+        avatar: 1,
+        email: 1,
+        coverImage: 1,
+        subscribersCount: 1,
+        subscribedToCount: 1,
+        isSubscribed: 1,
+      },
+    },
+  ]);
+  if (!channel.length) {
+    return resp.status(404).json({ message: "Channel does not exists !" });
+  }
+  return resp.json(
+    new ApiResponse(200, channel[0], "Channel fetched successfully !")
+  );
+});
+
+const getWatchHistory = asyncHandler(async (req: Request, resp: Response) => {
+  const user = await User.aggregate([
+    {
+      // $match: { _id: req.user?._id }, // wrong way
+      $match: { _id: new mongoose.Types.ObjectId(req.user?._id as string) }, // correct
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  resp
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        " Watch History fetched succussfully !"
+      )
+    );
+});
 export {
   registerUser,
   loginUser,
@@ -270,6 +440,11 @@ export {
   changeCurrentPassword,
   getCurrentUser,
   updateCurrentUser,
+  // deleteCurrentUser,
+  updateUserAvatar,
+  updateUserCoverImage,
+  getUserChannel,
+  getWatchHistory,
 };
 
 // const generateAccessAndRefreshToken = async (userId: unknown) => {

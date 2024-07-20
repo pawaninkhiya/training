@@ -6,7 +6,12 @@ import {
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
-  updateCurrentUser
+  updateCurrentUser,
+  updateUserAvatar,
+  updateUserCoverImage,
+  getWatchHistory,
+  getUserChannel
+  // deleteCurrentUser
 } from "../controllers/user.controllers";
 import { upload } from "../middlewares/multer.middleware";
 import { verifyJWT } from "../middlewares/auth.middleware";
@@ -29,12 +34,17 @@ router.route("/register").post(
   registerUser
 );
 
+router.route("/refresh-token").post(refreshAccessToken);
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/refresh-token").post(refreshAccessToken);
-router.route("/change-password").post(verifyJWT,changeCurrentPassword);
-// router.route("/get-user/:id").get(verifyJWT,getCurrentUser);
-router.route("/get-user").get(verifyJWT,getCurrentUser);
-router.route("/update-current-user").put(verifyJWT,updateCurrentUser);
+router.route("/change-password").post(verifyJWT, changeCurrentPassword);
+router.route("/user").get(verifyJWT, getCurrentUser);
+router.route("/user").put(verifyJWT, updateCurrentUser);
+router.route("/avatar").put(upload.single("avatar"), verifyJWT, updateUserAvatar);
+router.route("/coverImage").put(upload.single("coverImage"), verifyJWT, updateUserCoverImage);
+router.route("/user-channels/:username").get(verifyJWT,getUserChannel)
+router.route("/watchHistory").get(verifyJWT,getWatchHistory)
+
+// router.route("/delete-current-user").delete(deleteCurrentUser);
 
 export default router;
