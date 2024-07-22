@@ -6,16 +6,14 @@ import { upload } from "../middlewares/multer.middleware";
 const router = Router();
 
 router.use(verifyJWT);
-  
-router
-  .route("/")
-  .get(getAllVideos)
-  .post(
-    upload.fields([
-      { name: "videoFile", maxCount: 1 },
-      { name: "thumbnail", maxCount: 1 },
-    ]),
-    publishVideo
-  );
+
+router.route("/").get(getAllVideos);
+router.route("/").post(
+  upload.fields([
+    { name: "videoFile", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+  ]),
+  publishVideo
+);
 
 export default router;

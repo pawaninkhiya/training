@@ -28,7 +28,7 @@ import videoRouter from "./routes/video.routes";
 
 // route declaration
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/users", videoRouter);
+app.use("/api/v1/video", videoRouter);
 
 // routes
 
