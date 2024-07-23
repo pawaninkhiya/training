@@ -1,0 +1,85 @@
+import { ChangeEvent, useState } from "react";
+import AdminSidebar from "../../components/AdminSidebar";
+
+interface INewProduct {
+  photo: string;
+  name: string;
+  price: number;
+  stock: number;
+}
+const NewProduct = () => {
+  const [photo, setPhoto] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [price, setPrice] = useState<number>();
+  const [stock, setStock] = useState<number>();
+  const imageChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+  };
+  return (
+    <div className="admin-container">
+      <AdminSidebar />
+      <main className="product-management">
+        <article>
+          <form>
+            <h2>New Product</h2>
+            <div>
+              <label htmlFor="">Name</label>
+              <input
+                required
+                type="text"
+                placeholder="Name"
+                name="name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="">Price</label>
+              <input
+                required
+                type="number"
+                placeholder="Price"
+                name="price"
+                value={price}
+                onChange={(e) => {
+                  setPrice(Number(e.target.value));
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="">Stock</label>
+              <input
+                required
+                type="number"
+                placeholder="Name"
+                name="stock"
+                value={stock}
+                onChange={(e) => {
+                  setStock(Number(e.target.value));
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="">Photo</label>
+              <input
+                type="file"
+                placeholder="Name"
+                name="photo"
+                value={photo}
+                onChange={imageChange}
+              />
+            </div>
+            {
+              photo && <img src={photo} alt="New Image" />
+            }
+            <button>Create</button>
+          </form>
+        </article>
+      </main>
+    </div>
+  );
+};
+
+export default NewProduct;

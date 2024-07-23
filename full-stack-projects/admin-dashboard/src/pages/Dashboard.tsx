@@ -3,7 +3,10 @@ import AdminSidebar from "../components/AdminSidebar";
 import { FaRegBell } from "react-icons/fa";
 import userImage from "../assets/3135715.png";
 import { HiTrendingDown, HiTrendingUp } from "react-icons/hi";
-import data from '../assets/data.json'
+import data from "../assets/data.json";
+import { BarChart, DoughnutChart } from "../components/Chart";
+import { BiMaleFemale } from "react-icons/bi";
+import Table from "../components/DashboardTable";
 
 const Dashboard = () => {
   return (
@@ -47,11 +50,19 @@ const Dashboard = () => {
           <div className="revenue-chart">
             <h2>Revenue & Transaction</h2>
             {/* Graph Here */}
+            <BarChart
+              data_1={[200, 444, 343, 556, 778, 455, 990]}
+              data_2={[300, 144, 433, 655, 237, 755, 190]}
+              title_1={"Revenue"}
+              title_2={"Transaction"}
+              bgColor_1={"rgb(0,155,255)"}
+              bgColor_2={"rgb(53,162,235,0.8)"}
+            ></BarChart>
           </div>
           <div className="dashboard-categories">
             <h2>Inventory</h2>
             <div>
-            {data.categories.map((i) => (
+              {data.categories.map((i) => (
                 <CategoryItem
                   key={i.heading}
                   heading={i.heading}
@@ -61,6 +72,25 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
+        </section>
+        <section className="transaction-container">
+          <div className="gender-chart">
+            <h2>Gender Ratio</h2>
+
+            <DoughnutChart
+              labels={["Female", "Male"]}
+              data={[12, 19]}
+              backgroundColor={["hsl(340,82%,56%)", "rgba(53,162,235,0.8)"]}
+              cutout={90}
+            />
+
+            <p>
+              <BiMaleFemale />
+            </p>
+          </div>
+
+          <Table data={data.transaction} />
+
         </section>
       </main>
     </div>
