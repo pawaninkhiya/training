@@ -77,11 +77,7 @@ const Transaction = () => {
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>
-{
-  Table()
-}
-  </main>
+      <main>{Table()}</main>
     </div>
   );
 };

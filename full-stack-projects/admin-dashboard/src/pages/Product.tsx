@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 
 interface DataType {
+  id: number;
   photo: ReactElement;
   name: string;
   price: number;
@@ -36,6 +37,7 @@ const columns: Column<DataType>[] = [
 ];
 const arr: DataType[] = [
   {
+    id: 1,
     name: "Mackbook",
     price: 232223,
     stock: 23,
@@ -45,9 +47,10 @@ const arr: DataType[] = [
         alt="photo"
       />
     ),
-    action: <Link to={""}>Manage </Link>,
+    action: <Link to={`/admin/product/1`}>Manage </Link>,
   },
   {
+    id: 2,
     name: "Puma Shoes",
     price: 2323,
     stock: 60,
@@ -63,7 +66,7 @@ const arr: DataType[] = [
 const Product = () => {
   const [data, setData] = useState<DataType[]>(arr);
   const Table = useCallback(
-    TableHOC<DataType>(columns, data, "dashboard-product-box", "Products"),
+    TableHOC<DataType>(columns, data, "dashboard-product-box", "Products",true),
     []
   );
 

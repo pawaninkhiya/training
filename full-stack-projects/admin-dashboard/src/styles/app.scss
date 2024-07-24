@@ -1,6 +1,8 @@
 @import "_mixin";
 @import "_dashboard";
 @import "_product";
+@import "_chart";
+@import "dashboardapp";
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -31,9 +33,11 @@ a {
 .admin-container {
   @include grid(1fr 4fr, 2rem);
   height: 100vh;
+  min-height: 100vh;
   background-color: rgb(247, 247, 247);
   > aside {
     width: 100%;
+    
     background-color: white;
     padding: 1rem;
     z-index: 10;

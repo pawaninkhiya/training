@@ -1,19 +1,23 @@
 import { ChangeEvent, useState } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 
-interface INewProduct {
-  photo: string;
-  name: string;
-  price: number;
-  stock: number;
-}
 const NewProduct = () => {
   const [photo, setPhoto] = useState<string>();
   const [name, setName] = useState<string>();
   const [price, setPrice] = useState<number>();
   const [stock, setStock] = useState<number>();
-  const imageChange = (e: ChangeEvent<HTMLInputElement>) => {
 
+  const imageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file: File | undefined = e.target.files?.[0];
+    const reader: FileReader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setPhoto(reader.result);
+        }
+      };
+    }
   };
   return (
     <div className="admin-container">
@@ -67,13 +71,11 @@ const NewProduct = () => {
                 type="file"
                 placeholder="Name"
                 name="photo"
-                value={photo}
+                // value={photo}
                 onChange={imageChange}
               />
             </div>
-            {
-              photo && <img src={photo} alt="New Image" />
-            }
+            {photo && <img src={photo} alt="New Image" />}
             <button>Create</button>
           </form>
         </article>

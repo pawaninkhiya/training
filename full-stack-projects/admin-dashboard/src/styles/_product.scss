@@ -26,7 +26,7 @@
   > section {
     overflow-y: auto;
     width: 100%;
-    height: 85vh;
+     height:100vh;
     max-width: 500px;
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.216);
     background-color: white;
@@ -67,7 +67,7 @@
   }
 
   > article {
-    height: 85vh;
+    min-height: 85vh;
     padding: 2rem;
     width: 100%;
     max-width: 400px;
@@ -151,15 +151,15 @@
   }
 }
 
-// .transaction-product-card {
-//   @include flex(row, unset, center, 1rem);
+.transaction-product-card {
+  @include flex(row, unset, center, 1rem);
 
-//   > img {
-//     @include square(4rem);
-//     object-fit: cover;
-//     border-radius: 5px;
-//   }
-//   > span {
-//     margin-left: auto;
-//   }
-// }
+  > img {
+    @include sqaure(4rem);
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  > span {
+    margin-left: auto;
+  }
+}
