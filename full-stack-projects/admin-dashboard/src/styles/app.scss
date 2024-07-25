@@ -2,7 +2,8 @@
 @import "_dashboard";
 @import "_product";
 @import "_chart";
-@import "dashboardapp";
+@import "_dashboardapp";
+@import "mediaquery";
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -37,7 +38,7 @@ a {
   background-color: rgb(247, 247, 247);
   > aside {
     width: 100%;
-    
+
     background-color: white;
     padding: 1rem;
     z-index: 10;
@@ -148,5 +149,52 @@ a {
       background-color: rgba(0, 115, 255, 0.1);
       cursor: not-allowed;
     }
+  }
+}
+
+#hamburger {
+  display: grid;
+  place-items: center;
+  @include sqaure(3rem);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: rgb(44, 104, 255);
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9;
+  border-radius: 50%;
+}
+
+#close-sidebar {
+  padding: 0.8rem 2rem;
+  width: 100%;
+  background-color: rgb(178, 14, 14);
+  border: none;
+  outline: none;
+  color: white;
+  margin-top: 1rem;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.loader {
+  width: 100%;
+  height: 100vh;
+  @include flex;
+  
+  > div {
+    @include sqaure(10rem);
+    border-radius: 50%;
+    border-top: 0.5rem solid rgb(43, 43, 43);
+    border-left: 1rem solid rgb(43, 43, 43);
+    animation: loading-animation 0.5s linear infinite;
+  }
+}
+
+@keyframes loading-animation {
+  to {
+    transform: rotateZ(360deg);
   }
 }
