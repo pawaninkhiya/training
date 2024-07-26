@@ -7,6 +7,9 @@ const App = () => {
   const Home = lazy(() => import("./pages/Home"));
   const Search = lazy(() => import("./pages/Search"));
   const Cart = lazy(() => import("./pages/Cart"));
+  const Shipping = lazy(() => import("./pages/Shipping"));
+  const Login = lazy(() => import("./pages/Login"));
+
   // Admin Route import
   const Dashboard = lazy(() => import("./pages/admin/dashboard"));
   const Products = lazy(() => import("./pages/admin/products"));
@@ -28,11 +31,18 @@ const App = () => {
   return (
     <Router>
       <Suspense fallback={<Loader />}>
-      <Header/>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="./cart" element={<Cart />} />
+          <Route path="/cart" element={<Cart />} />
+
+          {/* Not logged in Route */}
+          <Route path="/login" element={<Login />} />
+          {/* Logged In user Routes */}
+          <Route>
+            <Route path="/shipping" element={<Shipping />} />
+          </Route>
 
           {/* Admin Route */}
           {/* <Route element={<ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} /> > */}

@@ -16,13 +16,16 @@ const Header = () => {
   };
   return (
     <nav className="header">
-      <Link onClick={()=> setIsOpen(false)} to="/">Home</Link>
-      <Link onClick={()=> setIsOpen(false)} to="/search">
+      <Link onClick={() => setIsOpen(false)} to={"/"}>
+        HOME
+      </Link>
+      <Link onClick={() => setIsOpen(false)} to={"/search"}>
         <FaSearch />
       </Link>
-      <Link onClick={()=> setIsOpen(false)} to="/cart">
+      <Link onClick={() => setIsOpen(false)} to={"/cart"}>
         <FaShoppingBag />
       </Link>
+
       {user?._id ? (
         <>
           <button onClick={() => setIsOpen((prev) => !prev)}>
@@ -31,9 +34,14 @@ const Header = () => {
           <dialog open={isOpen}>
             <div>
               {user.role === "admin" && (
-                <Link to={"/admin/dashboard"}>Admin</Link>
+                <Link onClick={() => setIsOpen(false)} to="/admin/dashboard">
+                  Admin
+                </Link>
               )}
-              <Link to={"/orders"}>My Orders</Link>
+
+              <Link onClick={() => setIsOpen(false)} to="/orders">
+                Orders
+              </Link>
               <button>
                 <FaSignOutAlt />
               </button>

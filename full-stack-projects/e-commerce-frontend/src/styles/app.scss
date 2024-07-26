@@ -33,6 +33,10 @@ $color2: rgb(46, 46, 46);
 $color3: rgb(0, 104, 136);
 @import "admin/mixin";
 @import "home";
+@import "cart";
+@import "shipinng";
+@import "login";
+@import "search";
 
 @import "admin/dashboard";
 @import "admin/products";
@@ -44,7 +48,7 @@ $color3: rgb(0, 104, 136);
   @include flex(row, end, stretch, 1.2rem);
   padding: 1rem;
   > a {
-    color: $color1;
+    color: $color3;
     letter-spacing: 2px;
     font-size: 1.2rem;
     & :hover {
@@ -69,10 +73,15 @@ $color3: rgb(0, 104, 136);
     left: calc(100% - 100px);
     top: 8%;
     > div {
-      @include flex(column,flex-start,center,0.25rem)
+      @include flex(column, flex-start, center, 0.25rem);
     }
-
   }
+}
+
+.heading {
+  @include heading;
+  margin: 1rem 0;
+  text-align:  center;
 }
 
 .admin-container {
