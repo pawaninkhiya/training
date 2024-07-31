@@ -35,7 +35,7 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    shipingCharges: {
+    shippingCharges: {
       type: Number,
       required: true,
     },
@@ -58,7 +58,7 @@ const orderSchema = new mongoose.Schema(
         photo: String,
         price: Number,
         quantity: Number,
-        productIdproductId: {
+        productId: {
           type: mongoose.Types.ObjectId,
           ref: "Product",
         },

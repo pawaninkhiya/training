@@ -44,6 +44,9 @@ export interface InvaildateCacheProps {
   product?: boolean;
   order?: boolean;
   admin?: boolean;
+  userId?: string;
+  orderId?: string;
+  productId?: string | string[];
 }
 
 // orders
