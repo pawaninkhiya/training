@@ -5,58 +5,6 @@ import { NextFunction, Request, Response } from "express";
 import { invaildateCache, reduceStock } from "../utils/features";
 import { myCache } from "./product.controllers";
 
-const newOrder = TryCatch(
-  async (req: Request<{}, {}, NewOrderRequestBody>, resp, next) => {
-    const {
-      shippingInfo,
-      shippingCharges,
-      orderItems,
-      discount,
-      subtotal,
-      total,
-      tax,
-      user,
-    } = req.body;
-
-    if (
-      !shippingInfo ||
-      !shippingCharges ||
-      !orderItems ||
-      !discount ||
-      !subtotal ||
-      !total ||
-      !tax ||
-      !user
-    ) {
-      return next(new ErrorHandler("All enter all field", 400));
-    }
-    let newOrder = {
-      shippingInfo,
-      shippingCharges,
-      orderItems,
-      discount,
-      subtotal,
-      total,
-      tax,
-      user,
-    };
-    const order = await Order.create(newOrder);
-    await reduceStock(orderItems);
-    await invaildateCache({
-      product: true,
-      order: true,
-      admin: true,
-      userId: user,
-      // productId: order
-    });
-
-    return resp.status(200).json({
-      success: true,
-      message: "Order created successfully",
-    });
-  }
-);
-
 const myOrders = TryCatch(async (req, resp, next) => {
   const { id: user } = req.query;
   if (!user) {
@@ -104,13 +52,67 @@ const getSingleOrder = TryCatch(async (req, resp, next) => {
     }
     myCache.set(key, JSON.stringify(order));
   }
-  await order.save();
+  if (order instanceof Order) {
+    await order.save();
+  }
   resp.status(200).json({
     success: true,
     data: order,
     message: "Order  fetched succusfully !",
   });
 });
+
+const newOrder = TryCatch(
+  async (req: Request<{}, {}, NewOrderRequestBody>, resp, next) => {
+    const {
+      shippingInfo,
+      shippingCharges,
+      orderItems,
+      discount,
+      subtotal,
+      total,
+      tax,
+      user,
+    } = req.body;
+
+    if (
+      !shippingInfo ||
+      !shippingCharges ||
+      !orderItems ||
+      !discount ||
+      !subtotal ||
+      !total ||
+      !tax ||
+      !user
+    ) {
+      return next(new ErrorHandler("All enter all field", 400));
+    }
+    let newOrder = {
+      shippingInfo,
+      shippingCharges,
+      orderItems,
+      discount,
+      subtotal,
+      total,
+      tax,
+      user,
+    };
+    const order = await Order.create(newOrder);
+    await reduceStock(orderItems);
+    await invaildateCache({
+      product: true,
+      order: true,
+      admin: true,
+      userId: user,
+      productId: order.orderItems.map((i) => String(i.productId)),
+    });
+
+    return resp.status(200).json({
+      success: true,
+      message: "Order created successfully",
+    });
+  }
+);
 
 const processOrder = TryCatch(async (req, res, next) => {
   const { id } = req.params;
@@ -160,13 +162,13 @@ const processOrder = TryCatch(async (req, res, next) => {
 });
 
 const deleteOrder = TryCatch(async (req, res, next) => {
-  const { id } = req.params;
+   const { id } = req.params;
+  
+   const order = await Order.findById(id);
+   if (!order) return next(new ErrorHandler("Order Not Found", 404));
 
-  const order = await Order.findById(id);
-  if (!order) return next(new ErrorHandler("Order Not Found", 404));
-
-  await order.deleteOne();
-  await invaildateCache({
+   await order.deleteOne();
+   await invaildateCache({
     product: false,
     order: true,
     admin: true,

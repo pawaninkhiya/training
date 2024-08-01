@@ -8,7 +8,8 @@ import {
   getAdminProducts,
   getSingleProduct,
   updateProduct,
-  getAllProducts
+  getAllProducts,
+  deleteProduct,
 } from "../controllers/product.controllers";
 
 const router = express.Router();
@@ -18,5 +19,9 @@ router.get("/all", getAllProducts);
 router.get("/latest", getLatestProduts);
 router.get("/categories", getAllCategories);
 router.get("/admin_products", getAdminProducts);
-router.route("/:id").get(getSingleProduct).put(uplaodSingle, updateProduct);
+router
+  .route("/:id")
+  .get(getSingleProduct)
+  .put(uplaodSingle, updateProduct)
+  .delete(adminOnly, deleteProduct);
 export default router;

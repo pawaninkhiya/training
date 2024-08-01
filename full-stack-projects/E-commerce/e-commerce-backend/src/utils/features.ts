@@ -1,8 +1,7 @@
 import { myCache } from "../controllers/product.controllers";
-import { Order } from "../models/order.models";
+
 import { Product } from "../models/product.models";
 import { InvaildateCacheProps, OrderItemType } from "../types/types";
-import { ErrorHandler } from "./errorHandler";
 
 export const invaildateCache = async ({
   product,
@@ -17,12 +16,12 @@ export const invaildateCache = async ({
       "latest-product",
       "categories",
       "admin-products",
+      `product-${productId}`,
     ];
 
     if (typeof productId === "string") productKeys.push(`product-${productId}`);
     if (typeof productId === "object") {
       productId.forEach((i) => productKeys.push(`product-${i}`));
-      console.log("lol");
     }
     myCache.del(productKeys);
   }
@@ -46,4 +45,10 @@ export const reduceStock = async (orderItems: OrderItemType[]) => {
     product.stock -= order.quantity;
     await product.save();
   }
+};
+
+export const calculatePercentage = (thisMonth: number, lastMonth: number) => {
+  if (lastMonth === 0) return thisMonth * 100;
+  const percentage = ((thisMonth - lastMonth) / lastMonth) * 100;
+  return percentage.toFixed(0);
 };

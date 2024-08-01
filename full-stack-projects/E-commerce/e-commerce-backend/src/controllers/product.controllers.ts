@@ -18,8 +18,8 @@ const getLatestProduts = TryCatch(async (req, resp, next) => {
   if (myCache.has("latest-product")) {
     products = JSON.parse(myCache.get("latest-product") as string);
   } else {
-    const product = await Product.find({}).sort({ createdAt: -1 }).limit(5);
-    myCache.set("latest-product", JSON.stringify(product));
+    const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+    myCache.set("latest-product", JSON.stringify(products));
   }
   return resp.status(200).json({
     status: 200,
@@ -105,8 +105,8 @@ const updateProduct = TryCatch(async (req, resp, next) => {
     product.category = category;
   }
 
-  console.log("Updated Product:", product);
   const pro = await product.save();
+  await invaildateCache({ product: true, productId: String(product._id) });
 
   return resp.status(200).json({
     status: 200,
@@ -116,6 +116,22 @@ const updateProduct = TryCatch(async (req, resp, next) => {
   });
 });
 
+ const deleteProduct = TryCatch(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) return next(new ErrorHandler("Product Not Found", 404));
+
+  await product.deleteOne();
+
+  await invaildateCache({
+    product: true,
+    productId: String(product._id),
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Product Deleted Successfully",
+  });
+});
 const getAllProducts = TryCatch(
   async (
     req: Request<{}, {}, {}, SearchRequestQuery>,
@@ -231,4 +247,5 @@ export {
   getSingleProduct,
   updateProduct,
   getAllProducts,
+  deleteProduct
 };

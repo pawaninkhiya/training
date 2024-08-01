@@ -3,10 +3,12 @@ import express from "express";
 import userRoutes from "./routes/user.routes";
 import productRoutes from "./routes/product.routes";
 import orderRoutes from "./routes/order.routes";
+import paymentRoutes from "./routes/payment.routes";
+import dashboardRoutes from "./routes/admin.dashboard.routes";
 import { errorMiddleware } from "./middlewares/errors.middleware";
 import { connectDB } from "./db/db";
 import { config } from "dotenv";
-import morgan from "morgan"
+import morgan from "morgan";
 
 config({
   path: "./.env",
@@ -19,7 +21,7 @@ const app = express();
 
 // middleware
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 // app.use(FormData.parser());
 
@@ -27,6 +29,8 @@ app.use(morgan('dev'));
 app.use("/api/user/v1", userRoutes);
 app.use("/api/product/v1", productRoutes);
 app.use("/api/order/v1", orderRoutes);
+app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 app.use(errorMiddleware);
 app.use("/uploads", express.static("uploads"));
