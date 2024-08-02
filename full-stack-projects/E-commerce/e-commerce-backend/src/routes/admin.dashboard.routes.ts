@@ -11,9 +11,9 @@ const router = express.Router();
 // http://localhost:4000/api/v1/dashboard/stats
 router.get("/stats", getDashboardStats);
 // http://localhost:4000/api/v1/dashboard/pie
-router.get("/pie", adminOnly, getPieCharts);
+router.get("/pie", getPieCharts);
 // http://localhost:4000/api/v1/dashboard/bar
-router.get("/bar", adminOnly, getBarCharts);
+router.get("/bar", getBarCharts);
 // http://localhost:4000/api/v1/dashboard/line
 router.get("/line", adminOnly, getLineCharts);
 

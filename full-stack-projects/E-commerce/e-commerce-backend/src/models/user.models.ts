@@ -10,7 +10,7 @@ interface IUser extends Document {
   gender: "male" | "female";
   dob: Date;
   age: number;
-  createAt: Date;
+  createdAt: Date;
   updatedAt: Date;
 }
 
@@ -57,7 +57,7 @@ const userSchema = new Schema<IUser>(
 
 userSchema.virtual("age").get(function () {
   const today = new Date();
-  const birthDate = this.dob;
+  const birthDate = new Date(this.dob);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
 
